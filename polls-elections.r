@@ -20,8 +20,8 @@ partystats <- merge(party, party[DaysBefore < 20 & Vote > 0.05,
 	.(mean=mean(VoteDiff), lower=quantile(VoteDiff, 0.1), upper=quantile(VoteDiff, 0.9)), 
 	by=Party])
 
-ggplot(partystats[DaysBefore < 20 & Vote > 0.05], aes(x=DaysBefore, y=VoteDiff, colour=Party)) + 
-	geom_point(size=3, alpha=0.5) + 
+g <- ggplot(partystats[DaysBefore < 20 & Vote > 0.05], aes(x=DaysBefore, y=VoteDiff, colour=Party)) + 
+	geom_point(size=3, aes(alpha=ifelse(ElectionYear==2014, 0.9, 0.5))) + #pick out 2014
 	facet_wrap(~Party) + 
 	scale_colour_manual(values=parties_v) + 
 	geom_hline(yintercept=0, colour='#AAAAAA') + 
@@ -33,7 +33,8 @@ ggplot(partystats[DaysBefore < 20 & Vote > 0.05], aes(x=DaysBefore, y=VoteDiff, 
 	geom_ribbon(alpha=0.3, linetype=0, aes(x=ifelse(DaysBefore > 10, 20, 0), ymin=lower, ymax=upper, fill=Party)) +
 	scale_fill_manual(values=parties_v) + 
 	guides(colour=FALSE) + 
-	guides(fill=FALSE) 
+	guides(fill=FALSE) +
+	guides(alpha=FALSE) +
 
-ggsave(width=6, height=4, file='polls.png', device='png')
+ggsave( width=6, height=4, file='polls.png', device='png')
 
